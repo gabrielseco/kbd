@@ -17,7 +17,6 @@ A TypeScript CLI tool built with Bun for interacting with the Anthropic API. The
 **Chat with Claude:**
 ```bash
 bun run chat "your message"
-bun run chat --model opus "complex question"
 bun run chat -m haiku -t 1000 "quick response"
 ```
 
@@ -31,7 +30,7 @@ bun run chat -o dca-vs-lumpsum.md "difference between DCA and lump sum investing
 ```
 
 **Available options:**
-- `-m, --model`: Choose model (opus, sonnet, haiku) [default: sonnet]
+- `-m, --model`: Choose model (sonnet, haiku) [default: sonnet]
 - `-t, --tokens`: Set max tokens [default: 4096]
 - `-o, --output`: Save to markdown file in output/ directory
 - `-h, --help`: Show help
@@ -45,6 +44,5 @@ bun run chat -o dca-vs-lumpsum.md "difference between DCA and lump sum investing
 
 ## Available Models
 
-- `opus` - claude-3-opus-20240229 (most capable)
 - `sonnet` - claude-3-5-sonnet-20241022 (balanced, default)
 - `haiku` - claude-3-5-haiku-20241022 (fastest)
