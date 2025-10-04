@@ -1,0 +1,16 @@
+{
+  "name": "kbd",
+  "version": "0.1.0",
+  "description": "CLI tool to interact with Anthropic API",
+  "type": "module",
+  "scripts": {
+    "chat": "bun run src/chat.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.6.2"
+  }
+}
