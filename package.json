@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "CLI tool to interact with Anthropic API",
   "type": "module",
+  "bin": {
+    "kbd": "./src/chat.ts"
+  },
   "scripts": {
     "chat": "bun run src/chat.ts"
   },

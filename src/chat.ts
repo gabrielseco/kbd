@@ -1,15 +1,62 @@
 #!/usr/bin/env bun
 
 import Anthropic from '@anthropic-ai/sdk';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { homedir } from 'os';
 
 // Configuration
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
 const DEFAULT_MAX_TOKENS = 2000;
-const OUTPUT_DIR = 'kbd';
+const CONFIG_DIR = join(homedir(), '.kbd');
+const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
+
+// Config interface
+interface Config {
+  outputDir: string;
+}
+
+// Load or initialize config
+async function loadConfig(): Promise<Config> {
+  if (existsSync(CONFIG_FILE)) {
+    const content = await readFile(CONFIG_FILE, 'utf-8');
+    return JSON.parse(content);
+  }
+
+  // First time setup
+  console.log('👋 Welcome to kbd! First-time setup...\n');
+  console.log('Where would you like to save your chat outputs?');
+  console.log(`Default: ${join(homedir(), 'kbd')}\n`);
+
+  const defaultDir = join(homedir(), 'kbd');
+
+  // Use readline for input
+  const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const outputDir = await new Promise<string>((resolve) => {
+    readline.question(`Enter directory path (or press Enter for default): `, (answer: string) => {
+      readline.close();
+      resolve(answer.trim() || defaultDir);
+    });
+  });
+
+  const config: Config = { outputDir };
+
+  // Save config
+  if (!existsSync(CONFIG_DIR)) {
+    await mkdir(CONFIG_DIR, { recursive: true });
+  }
+  await writeFile(CONFIG_FILE, JSON.stringify(config, null, 2));
+
+  console.log(`\n✓ Configuration saved! Outputs will be saved to: ${outputDir}\n`);
+
+  return config;
+}
 
 // Available models
 const AVAILABLE_MODELS = {
@@ -100,6 +147,9 @@ function generateFilename(msg: string): string {
 // Make API call
 async function chat() {
   try {
+    // Load config
+    const config = await loadConfig();
+
     console.log(`\nModel: ${model}`);
     console.log(`Max tokens: ${maxTokens}`);
     console.log(`\nUser: ${message}\n`);
@@ -127,12 +177,11 @@ async function chat() {
     // Save to file if output flag is used
     if (outputFile || fullResponse) {
       const filename = outputFile || generateFilename(message);
-      const filepath = join(OUTPUT_DIR, filename);
+      const filepath = join(config.outputDir, filename);
 
       // Create output directory if it doesn't exist
-      const outputPath = filepath.substring(0, filepath.lastIndexOf('/'));
-      if (!existsSync(outputPath)) {
-        await mkdir(outputPath, { recursive: true });
+      if (!existsSync(config.outputDir)) {
+        await mkdir(config.outputDir, { recursive: true });
       }
 
       // Create markdown content with frontmatter metadata
