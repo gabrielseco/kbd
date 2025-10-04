@@ -32,9 +32,6 @@ bun run chat "your message here"
 ### Model Selection
 
 ```bash
-# Use Claude Opus (most capable)
-bun run chat --model opus "complex question"
-
 # Use Claude Haiku (fastest)
 bun run chat -m haiku "quick response"
 
@@ -65,14 +62,13 @@ bun run chat -o dca-vs-lumpsum.md "difference between DCA and lump sum investing
 
 | Option | Alias | Description | Default |
 |--------|-------|-------------|---------|
-| `--model` | `-m` | Choose model: `opus`, `sonnet`, or `haiku` | `sonnet` |
+| `--model` | `-m` | Choose model: `sonnet` or `haiku` | `sonnet` |
 | `--tokens` | `-t` | Set max tokens | `4096` |
 | `--output` | `-o` | Save to markdown file in output/ directory | - |
 | `--help` | `-h` | Show help | - |
 
 ## Available Models
 
-- **opus** - claude-3-opus-20240229 (most capable)
 - **sonnet** - claude-3-5-sonnet-20241022 (balanced, default)
 - **haiku** - claude-3-5-haiku-20241022 (fastest)
 
